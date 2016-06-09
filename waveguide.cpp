@@ -3,6 +3,8 @@
 #include<iostream>
 #include <stdlib.h>
 
+double ro;
+
 #include "READ.h"
 #include "CG.h"
 #include "Timer.h"
@@ -34,24 +36,17 @@ void run_test(){
 int main(int argc, char *argv[]){
 	(void) argc; //to suppress Warnings about unused argc
 	assert(argc>0);
-	double ro = stod(argv[1]);
+	ro = stod(argv[1]);
 	double eps = stod(argv[2]);
-	cerr<<ro<<'\n';  
-	cerr<<eps<<'\n'; 
-	//run_test();return 0;
-	readGrid("inputs/unit_circle.txt");
-	//getLocalMatrix(0);
+	readGrid("unit_circle.txt");
+	writeK(vertexes,"ksq.txt");
 	getMassMatrix(M);
-	return 0;
-    
-    //getTestMatrix("reference-outputs/A-ref.txt",A);    
-    //getTestMatrix("reference-outputs/M-ref.txt",M);
-
-
+	writeSparceMatrix(M,"M.txt");
+	getStiffnessMatrix(A);
+	writeSparceMatrix(A,"A.txt");
     u.assign(A.size(),1.);
     f.assign(A.size(),0.);    
     inversePowerIteration( A, M, f, u, eps);
-	
-
+    writeVector(u,vertexes,"eigenmode.txt");
 
 }

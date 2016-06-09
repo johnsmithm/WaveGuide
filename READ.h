@@ -17,6 +17,34 @@ typedef vector<double> VecD;
 #define pb push_back
 #define mp make_pair
 
+double f1(double x1, double y1){
+	return (100+ro)*exp(-50*(x1*x1+y1*y1)) - 100;
+}
+
+void writeSparceMatrix(SparceMatrix &m, string path){
+	ofstream out(path);
+	for(size_t i=0;i<m.size();++i){
+		for(auto cell : m[i])
+			out<<i<<" "<<cell.x<<" "<<cell.y<<"\n";
+	}
+	out.close();
+}
+
+void writeVector(vector<double> &v, vector<pr> vertexes, string path){
+	ofstream out(path);
+	for(size_t i=0;i<v.size();++i){
+		out<<vertexes[i].x<<" "<<vertexes[i].y<<" "<<v[i]<<"\n";
+	}
+	out.close();
+}
+
+void writeK(vector<pr> vertexes, string path){
+	ofstream out(path);
+	for(size_t i=0;i<vertexes.size();++i){
+		out<<vertexes[i].x<<" "<<vertexes[i].y<<" "<<f1(vertexes[i].x,vertexes[i].y)<<"\n";
+	}
+	out.close();
+}
 
 void getTestMatrix(string path, SparceMatrix &m){
 	ifstream in(path);
@@ -86,6 +114,27 @@ void readGrid(string path){
 
  }
 
+  vector< vector< double > > getLocalMatrixS(int i){
+
+ 	vector< vector< double > > my_local_matrix;
+	vector<double> corners(6, 0.0);
+	ELEMENTS::Triangle my_element;
+ 	// array corners contains the x- and y-coordinates of the
+	// triangle corners in the order x0, y0, x1, y1, x2, y2
+	corners[0] = vertexes[triangles[i][0]].x; corners[1] = vertexes[triangles[i][0]].y;
+	corners[2] = vertexes[triangles[i][1]].x; corners[3] = vertexes[triangles[i][1]].y;
+	corners[4] = vertexes[triangles[i][2]].x; corners[5] = vertexes[triangles[i][2]].y;
+	// pass the corners to the finite element
+ 	my_element(corners);
+ 	my_local_matrix = my_element.integrate(grad(v_()) * grad(w_()) - func<double>(f1) * v_() * w_());
+ 	/*for(int i=0;i<3;++i){
+ 		for(int j=0;j<3;++j)cerr<<my_local_matrix[i][j]<<" ";
+ 		cerr<<"\n";
+ 	}*/
+ 	return my_local_matrix;
+
+ }
+
 
  void getMassMatrix(SparceMatrix &m){
  	vector< vector< double > > my_local_matrix;
@@ -109,6 +158,32 @@ void readGrid(string path){
 	 	}
  	}
  	
- 	for(auto cell : m[0])
- 		cerr<<cell.x<<" "<<cell.y<<"\n";
+ 	//for(auto cell : m[0])
+ 		//cerr<<cell.x<<" "<<cell.y<<"\n";
+ }
+
+ void getStiffnessMatrix(SparceMatrix &m){
+ 	vector< vector< double > > my_local_matrix;
+ 	m.assign(nrV,map<size_t,double>());
+
+
+ 	for(int i1=0;i1<nrT;++i1){
+ 		my_local_matrix = getLocalMatrixS(i1);
+ 		for(int i=0;i<3;++i){
+	 		for(int j=0;j<3;++j){
+	 			assert(triangles[i1][i] < nrV && triangles[i1][j] < nrV);
+	 		
+	 			if(m[triangles[i1][i]].find(triangles[i1][j]) != m[triangles[i1][i]].end()){
+	 				m[triangles[i1][i]][triangles[i1][j]] = m[triangles[i1][i]][triangles[i1][j]] + my_local_matrix[i][j];
+	 			}
+	 			else{
+	 				m[triangles[i1][i]][triangles[i1][j]] = my_local_matrix[i][j];
+	 			}
+	 		}
+	 		
+	 	}
+ 	}
+ 	
+ 	//for(auto cell : m[0])
+ 	//	cerr<<cell.x<<" "<<cell.y<<"\n";
  }

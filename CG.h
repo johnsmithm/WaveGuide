@@ -13,7 +13,7 @@
 
 void printTest(VecD u);
 
-void SolveEquationGS(SparceMatrix A, vector<double> &u, vector<double> f){
+void SolveEquationGS(SparceMatrix &A, vector<double> &u, vector<double> &f){
 	for(int k=0;k<300;++k){
 		for(size_t i=0;i<u.size();++i){
 			double val = f[i], mid = 0.0001;
@@ -73,7 +73,7 @@ void printTest(VecD a){
 	cerr<<"\n";
 }
 
-void inversePowerIteration(SparceMatrix A, SparceMatrix M, VecD f, VecD u, double eps){
+void inversePowerIteration(SparceMatrix A, SparceMatrix M, VecD f, VecD &u, double eps){
 	double eigenvalue = 100., eigenvalueOld = 1.;
 	tmp.assign(f.size(),0.);
 
@@ -88,8 +88,8 @@ void inversePowerIteration(SparceMatrix A, SparceMatrix M, VecD f, VecD u, doubl
 		eigenvalue = multiplyVectorVector(u,tmp);
 		multiplyVectorMatrix(tmp,M,u);
 		eigenvalue /= multiplyVectorVector(u,tmp);
-		//cerr<<eigenvalue<<"\n";
+		cerr<<"EigenValue:"<<eigenvalue<<"\n";
 	}
 	
-	cerr<<eigenvalue<<"\n";
+	//cerr<<"EigenValue:"<<eigenvalue<<"\n";
 }
