@@ -13,8 +13,21 @@
 
 void printTest(VecD u);
 
-void SolveEquationGS(SparceMatrix &A, vector<double> &u, vector<double> &f){
-	for(int k=0;k<300;++k){
+double residuum(SparceMatrix &A, vector<double> &u, vector<double> &f){
+	double res = 0.,tmp = 0.;
+	for(size_t i=0;i<u.size();++i){
+		tmp = f[i];
+		for(auto cell : A[i]){
+			assert(cell.x>=0 && cell.x<u.size());
+			tmp -= cell.y*u[cell.x];
+		}
+		res += tmp*tmp;
+	}
+	return sqrt(res);
+}
+
+void SolveEquationGS(SparceMatrix &A, vector<double> &u, vector<double> &f, double eps){
+	for(;residuum(A,u,f)>eps;){
 		for(size_t i=0;i<u.size();++i){
 			double val = f[i], mid = 0.0001;
 			//cerr<<f[i]<<" \n";
@@ -78,10 +91,10 @@ void inversePowerIteration(SparceMatrix A, SparceMatrix M, VecD f, VecD &u, doub
 	tmp.assign(f.size(),0.);
 
 
-	while( ABS((eigenvalue-eigenvalueOld)/eigenvalueOld) > eps){
+	while( ABS((eigenvalue-eigenvalueOld)/eigenvalueOld) > 0.0000000001){
 		eigenvalueOld = eigenvalue;
 		multiplyVectorMatrix(f,M,u);
-		SolveEquationGS(A,u,f);
+		SolveEquationGS(A,u,f,eps);
 		//printTest(u);        
 		multiplayVectorScalar(u,1./eurclidianNorm(u));
 		multiplyVectorMatrix(tmp,A,u);
