@@ -90,7 +90,7 @@ void inversePowerIteration(SparceMatrix A, SparceMatrix M, VecD f, VecD &u, doub
 	double eigenvalue = 100., eigenvalueOld = 1.;
 	tmp.assign(f.size(),0.);
 
-
+	int nr = 0;
 	while( ABS((eigenvalue-eigenvalueOld)/eigenvalueOld) > 0.0000000001){
 		eigenvalueOld = eigenvalue;
 		multiplyVectorMatrix(f,M,u);
@@ -101,7 +101,8 @@ void inversePowerIteration(SparceMatrix A, SparceMatrix M, VecD f, VecD &u, doub
 		eigenvalue = multiplyVectorVector(u,tmp);
 		multiplyVectorMatrix(tmp,M,u);
 		eigenvalue /= multiplyVectorVector(u,tmp);
-		cerr<<"EigenValue:"<<eigenvalue<<"\n";
+		//cout.setprecision(9);
+		cerr<<"Step:"<<++nr<<" EigenValue:"<<eigenvalue<<"\n";
 	}
 	
 	//cerr<<"EigenValue:"<<eigenvalue<<"\n";

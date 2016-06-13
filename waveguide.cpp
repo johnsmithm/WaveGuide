@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 	assert(argc>0);
 	ro = stod(argv[1]);
 	double eps = stod(argv[2]);
-	readGrid("unit_circle.txt");
+	readGrid(/*"unit_circle_fine.txt"*/);
 	writeK(vertexes,"ksq.txt");
 	getMassMatrix(M);
 	writeSparceMatrix(M,"M.txt");

@@ -18,7 +18,7 @@ typedef vector<double> VecD;
 #define mp make_pair
 
 double f1(double x1, double y1){
-	return (100+ro)*exp(-50*(x1*x1+y1*y1)) - 100;
+	return (100.+ro)*exp(-50.*(x1*x1+y1*y1)) - 100.;
 }
 
 void writeSparceMatrix(SparceMatrix &m, string path){
@@ -66,26 +66,26 @@ vector<pr > vertexes;
 vector<vector<int> > triangles;
 int nrV,nrT;
 
-void readGrid(string path){
-	ifstream in(path);
+void readGrid(/*string path*/){
+	//ifstream in(path);
 	string s;
-	in>>nrV;
-	getline(in,s);
-	getline(in,s);
+	cin>>nrV;
+	getline(cin,s);
+	getline(cin,s);
 	for(int i=0;i<nrV;++i){
 		int q; double w,p;
-		in>>q>>w>>p;
+		cin>>q>>w>>p;
 		vertexes.pb(mp(w,p));
 	}
-	in>>nrT;
-	for(int i=0;i<18;++i)in>>s;
+	cin>>nrT;
+	for(int i=0;i<18;++i)cin>>s;
 
 	for(int i=0;i<nrT;++i){
 		vector<int> r(3,0);
-		in>>r[0]>>r[1]>>r[2];
+		cin>>r[0]>>r[1]>>r[2];
 		triangles.pb(r);
 	}
-	in.close();
+	//in.close();
 }
 
  #include "Source/Colsamm.h"
